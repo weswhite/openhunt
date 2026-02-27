@@ -1,0 +1,10 @@
+node_modules/
+dist/
+dist-electron/
+server/data/openhunt.db
+server/data/openhunt.db-wal
+server/data/openhunt.db-shm
+server/dist/
+server/drizzle/
+*.log
+.DS_Store

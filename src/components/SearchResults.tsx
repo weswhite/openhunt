@@ -97,7 +97,7 @@ export function SearchResults({ onSelect }: { onSelect: (code: string) => void }
         <div className="space-y-3">
           <p className="text-ink-400 text-sm">Elk, deer, bear, antelope, moose, goat, sheep</p>
           <div className="flex flex-wrap justify-center gap-2">
-            {['bull elk 201', 'doe deer 61 rifle', 'bear 85', 'EM040O1M'].map(ex => (
+            {['cow elk 61', 'deer rifle 48', 'bear 85', 'EE201O1A'].map(ex => (
               <button
                 key={ex}
                 onClick={() => {

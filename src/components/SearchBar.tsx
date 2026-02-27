@@ -11,7 +11,7 @@ export function SearchBar() {
         type="text"
         value={query}
         onChange={e => setQuery(e.target.value)}
-        placeholder="bull elk 201, doe deer 61 rifle, bear 85..."
+        placeholder="cow elk 61, deer rifle 48, GMU 85..."
         className="w-full pl-12 pr-12 py-4 bg-white border border-paper-300 rounded-xl text-ink-800 placeholder:text-ink-300 focus:outline-none focus:border-copper-400 focus:ring-2 focus:ring-copper-200/40 shadow-lg shadow-ink-900/[0.06] transition-all text-[15px]"
         autoFocus
       />

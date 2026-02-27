@@ -46,7 +46,8 @@ export function setSearchQuery(q: string) {
     }
 
     try {
-      const results = await api<SearchResult[]>(`/api/search?q=${encodeURIComponent(q)}`)
+      const sanitized = q.replace(/-/g, '')
+      const results = await api<SearchResult[]>(`/api/search?q=${encodeURIComponent(sanitized)}`)
       searchState.results = results
     } catch (err) {
       console.error('Search error:', err)

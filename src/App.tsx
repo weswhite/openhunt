@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
-import { Crosshair } from 'lucide-react'
+import { Crosshair, Heart } from 'lucide-react'
 import { SearchBar } from './components/SearchBar'
 import { SearchResults } from './components/SearchResults'
 import { HuntDetailView } from './components/HuntDetailView'
+import { AppFooter } from './components/AppFooter'
 
 function AppHeader() {
   return (
@@ -18,7 +19,7 @@ function AppHeader() {
               <Crosshair className="w-4 h-4 text-white" strokeWidth={2.5} />
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="text-xl font-bold text-ink-800 tracking-tight" style={{ fontFamily: '"Source Sans 3", system-ui' }}>
+              <span className="text-xl font-bold text-ink-800 tracking-tight" style={{ fontFamily: 'Barlow, system-ui' }}>
                 Open<span className="text-copper-500">Hunt</span>
               </span>
               <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-md bg-olive-50 text-olive-500 text-[10px] font-semibold tracking-wider uppercase border border-olive-100">
@@ -75,18 +76,20 @@ export default function App() {
 
   if (selectedCode) {
     return (
-      <div className="topo-bg grain min-h-screen">
+      <div className="topo-bg grain min-h-screen flex flex-col">
         <HuntDetailView code={selectedCode} onBack={handleBack} />
+        <div className="flex-1" />
+        <AppFooter />
       </div>
     )
   }
 
   return (
-    <div className="topo-bg grain min-h-screen">
+    <div className="topo-bg grain min-h-screen flex flex-col">
       <AppHeader />
 
       {/* Search */}
-      <main className="max-w-5xl mx-auto px-5 pt-12 pb-20">
+      <main className="max-w-5xl mx-auto px-5 pt-12 pb-20 w-full flex-1">
         <div className="max-w-2xl mx-auto mb-10">
           <h2 className="font-display text-4xl text-ink-800 text-center mb-2 animate-fade-up">
             Find your hunt
@@ -102,12 +105,7 @@ export default function App() {
         <SearchResults onSelect={handleSelect} />
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-paper-200 py-6">
-        <div className="max-w-5xl mx-auto px-5 text-center text-xs text-ink-400">
-          Data from Colorado Parks & Wildlife public draw recaps
-        </div>
-      </footer>
+      <AppFooter />
     </div>
   )
 }

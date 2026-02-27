@@ -22,9 +22,9 @@ const sexMap: Record<string, string> = {
 }
 
 const methodMap: Record<string, string> = {
-  rifle: '1',
-  muzzleloader: '2', muzzle: '2',
-  archery: '3', bow: '3',
+  rifle: 'R',
+  muzzleloader: 'M', muzzle: 'M',
+  archery: 'A', bow: 'A',
 }
 
 router.get('/', (req, res) => {
@@ -35,11 +35,14 @@ router.get('/', (req, res) => {
   const conditions: string[] = []
   const params: any[] = []
 
-  for (const token of tokens) {
-    // 3-digit number → GMU
+  // Filter out the word "gmu" — it's just a label, the number is what matters
+  const filtered = tokens.filter(t => t !== 'gmu')
+
+  for (const token of filtered) {
+    // 1-3 digit number → GMU (zero-pad to 3 digits to match DB)
     if (/^\d{1,3}$/.test(token)) {
       conditions.push('h.gmu = ?')
-      params.push(token)
+      params.push(token.padStart(3, '0'))
       continue
     }
 

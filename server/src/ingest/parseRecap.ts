@@ -1,8 +1,9 @@
 import { PdfSource } from './pdfUrls.js'
 
-// Hunt code regex: [Species][Sex][GMU 3-digit][Season][Method][Residency]
-// E.g., DE003O1A = Deer Either-Sex GMU-003 Regular Rifle Any-Residency
-const HUNT_CODE_RE = /^[EDAMBGSC][MFE]\d{3}[A-Z]\d[RAM]$/
+// Hunt code format: [Species][Sex][GMU 3-digit][SeasonType][SeasonNum][Method]
+// E.g., DM048O1M = Deer Male GMU-048 Regular 1st-Season Muzzleloader
+// Source: https://www.hunter-ed.com/colorado/studyGuide/Hunt-Codes-cont./20300601_166219/
+const HUNT_CODE_RE = /^[EDAMBGSC][MFE]\d{3}[A-Z]\d[RAMX]$/
 
 const SPECIES_NAMES: Record<string, string> = {
   E: 'Elk', D: 'Deer', A: 'Antelope', M: 'Moose',
@@ -13,19 +14,20 @@ const SEX_NAMES: Record<string, string> = {
   M: 'Male', F: 'Female', E: 'Either Sex',
 }
 
-const SEASON_NAMES: Record<string, string> = {
-  A: 'August', B: 'September', C: 'Early October', D: 'Mid-October',
-  E: 'Late October', F: 'Early November', G: 'Mid-November', H: 'Late November',
-  J: 'December', K: 'January', L: 'Plains', M: 'Early',
-  N: 'Late', O: 'Regular', P: 'Special', Q: 'Muzzleloader',
-  R: 'Archery', S: 'Private Land Only', T: 'Extended', U: 'Youth',
-  V: 'Spring', W: 'Winter', X: 'Hybrid', Y: 'By-Draw-Only',
-  Z: 'Other',
+// Season type (position 5) + season number (position 6) together define the season
+// E.g., O1 = 1st Regular season, O2 = 2nd Regular season, P1 = Private Land Only, etc.
+const SEASON_TYPE_NAMES: Record<string, string> = {
+  E: 'Early', K: 'Youth', L: 'Plains', N: 'Late',
+  O: '', P: 'Private Land', S: 'Special', W: 'Ranching for Wildlife',
+  J: 'Ranching for Wildlife',
 }
 
+// Method of take (last character)
 const METHOD_NAMES: Record<string, string> = {
-  '1': 'Rifle', '2': 'Muzzleloader', '3': 'Archery',
-  '4': 'Either Method', '5': 'Rifle/Muzzleloader',
+  R: 'Rifle',
+  M: 'Muzzleloader',
+  A: 'Archery',
+  X: 'Season Choice',
 }
 
 export interface ParsedHuntCode {
@@ -75,25 +77,40 @@ export interface ParseResult {
   pointDistributions: ParsedPointDist[]
 }
 
+function getSuffix(n: string): string {
+  switch (n) {
+    case '1': return 'st'
+    case '2': return 'nd'
+    case '3': return 'rd'
+    default: return 'th'
+  }
+}
+
 export function decodeHuntCode(code: string): ParsedHuntCode | null {
   if (!HUNT_CODE_RE.test(code)) return null
 
   const species = code[0]
   const sex = code[1]
   const gmu = code.substring(2, 5)
-  const season = code[5]
-  const method = code[6]
-  const residency = code[7]
+  const seasonType = code[5]
+  const seasonNum = code[6]
+  const method = code[7]
 
   const speciesName = SPECIES_NAMES[species] || species
   const sexName = SEX_NAMES[sex] || sex
-  const seasonName = SEASON_NAMES[season] || season
   const methodName = METHOD_NAMES[method] || `Method ${method}`
+
+  // Build season name from type + number
+  const typePrefix = SEASON_TYPE_NAMES[seasonType]
+  const seasonName = typePrefix !== undefined
+    ? `${typePrefix}${typePrefix ? ' ' : ''}${seasonNum}${getSuffix(seasonNum)} Season`.trim()
+    : `Season ${seasonType}${seasonNum}`
+
+  const season = `${seasonType}${seasonNum}`
 
   const searchText = [
     code, speciesName, sexName, `GMU ${gmu}`, gmu,
     seasonName, methodName,
-    residency === 'R' ? 'Resident' : residency === 'M' ? 'Non-Resident' : 'Any',
   ].join(' ').toLowerCase()
 
   return {
@@ -107,7 +124,7 @@ export function decodeHuntCode(code: string): ParsedHuntCode | null {
     seasonName,
     method,
     methodName,
-    residency: residency === 'R' ? 'R' : residency === 'M' ? 'NR' : 'R',
+    residency: 'R', // Draw recap PDFs are resident data
     searchText,
   }
 }

@@ -4,8 +4,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        display: ['"Instrument Serif"', 'Georgia', 'serif'],
-        sans: ['"Source Sans 3"', 'system-ui', 'sans-serif'],
+        display: ['"Barlow Condensed"', 'sans-serif'],
+        sans: ['Barlow', 'system-ui', 'sans-serif'],
+        mono: ['"IBM Plex Mono"', 'monospace'],
       },
       colors: {
         paper: {

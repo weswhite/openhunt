@@ -123,11 +123,6 @@ export function HuntDetailView({ code, onBack }: { code: string; onBack: () => v
         )}
       </main>
 
-      <footer className="border-t border-paper-200 py-6 mt-12">
-        <div className="max-w-5xl mx-auto px-5 text-xs text-ink-400 text-center">
-          Data sourced from CPW public draw recaps
-        </div>
-      </footer>
     </>
   )
 }

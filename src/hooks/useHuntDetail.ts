@@ -53,7 +53,8 @@ export function useHuntDetail(code: string) {
   useEffect(() => {
     setLoading(true)
     setError(null)
-    api<HuntDetail>(`/api/hunts/${code}`)
+    const sanitized = code.replace(/-/g, '')
+    api<HuntDetail>(`/api/hunts/${sanitized}`)
       .then(setData)
       .catch(err => setError(err.message))
       .finally(() => setLoading(false))
